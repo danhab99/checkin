@@ -10,6 +10,7 @@ import { Plus } from '@phosphor-icons/react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
 import { Toaster } from '@/components/ui/sonner'
+import { motion } from 'framer-motion'
 
 function App() {
   const [assessments, setAssessments] = useKV<Assessment[]>('assessments', [])
@@ -94,19 +95,32 @@ function App() {
 
   if (viewingResults) {
     return (
-      <div className="min-h-screen bg-background">
+      <motion.div
+        key="results"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        transition={{ duration: 0.2 }}
+        className="min-h-screen bg-background"
+      >
         <ResultsView
           assessment={viewingResults}
           results={getResultsForAssessment(viewingResults.id)}
           onBack={() => setViewingResults(null)}
         />
         <Toaster />
-      </div>
+      </motion.div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20 sm:pb-6">
+    <motion.div
+      key="home"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
+      className="min-h-screen bg-background pb-20 sm:pb-6"
+    >
       <div className="sticky top-0 z-10 bg-background border-b px-4 py-3 sm:relative sm:border-0 sm:px-6 sm:pt-6 sm:pb-0">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-start justify-between gap-3">
@@ -121,10 +135,9 @@ function App() {
                 setEditingAssessment(undefined)
                 setDialogOpen(true)
               }}
-              size="sm"
-              className="shrink-0 sm:size-default"
+              className="shrink-0 h-10 px-3 sm:px-4"
             >
-              <Plus className="sm:mr-2" />
+              <Plus className="h-5 w-5 sm:mr-2" />
               <span className="hidden sm:inline">Create Assessment</span>
             </Button>
           </div>
@@ -175,7 +188,7 @@ function App() {
       />
 
       <Toaster />
-    </div>
+    </motion.div>
   )
 }
 

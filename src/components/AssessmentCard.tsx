@@ -47,8 +47,7 @@ export function AssessmentCard({
         <div className="flex flex-col sm:flex-row gap-2">
           <Button 
             onClick={() => onTakeTest(assessment)}
-            className="flex-1 w-full"
-            size="sm"
+            className="flex-1 w-full h-10"
           >
             <ClipboardText className="mr-2 h-4 w-4" />
             Take Test
@@ -57,8 +56,7 @@ export function AssessmentCard({
             variant="outline" 
             onClick={() => onViewResults(assessment)}
             disabled={resultCount === 0}
-            className="flex-1 w-full sm:w-auto"
-            size="sm"
+            className="flex-1 w-full sm:w-auto h-10"
           >
             <ChartLine className="mr-2 h-4 w-4" />
             Results

@@ -91,7 +91,7 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Daily Mood Check"
-                className="h-11"
+                className="h-10"
               />
             </div>
 
@@ -102,7 +102,7 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Brief description of what this assessment tracks"
-                rows={2}
+                rows={3}
                 className="resize-none"
               />
             </div>
@@ -126,7 +126,7 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
                         value={question.text}
                         onChange={(e) => updateQuestion(index, { text: e.target.value })}
                         placeholder="Question text"
-                        className="h-11"
+                        className="h-10"
                       />
 
                       <div className="space-y-3">
@@ -154,7 +154,7 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
                               type="number"
                               value={question.scaleMin || 1}
                               onChange={(e) => updateQuestion(index, { scaleMin: parseInt(e.target.value) })}
-                              className="w-16 h-10"
+                              className="w-20 h-10"
                               min={0}
                             />
                             <span className="text-sm text-muted-foreground">to</span>
@@ -162,7 +162,7 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
                               type="number"
                               value={question.scaleMax || 10}
                               onChange={(e) => updateQuestion(index, { scaleMax: parseInt(e.target.value) })}
-                              className="w-16 h-10"
+                              className="w-20 h-10"
                               min={question.scaleMin || 1}
                             />
                           </div>
@@ -174,7 +174,7 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
                       variant="ghost"
                       size="icon"
                       onClick={() => removeQuestion(index)}
-                      className="h-8 w-8 shrink-0"
+                      className="h-10 w-10 shrink-0"
                     >
                       <Trash className="h-4 w-4" />
                     </Button>
@@ -192,13 +192,13 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
         </ScrollArea>
 
         <DialogFooter className="px-4 pb-6 sm:px-6 gap-2 flex-col sm:flex-row">
-          <Button variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto h-10">
             Cancel
           </Button>
           <Button 
             onClick={handleSave}
             disabled={!title.trim() || questions.filter(q => q.text.trim()).length === 0}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto h-10"
           >
             {editingAssessment ? 'Save Changes' : 'Create Assessment'}
           </Button>

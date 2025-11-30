@@ -23,7 +23,7 @@ export function ResultsView({ assessment, results, onBack }: ResultsViewProps) {
     <div className="min-h-screen bg-background">
       <div className="sticky top-0 z-10 bg-background border-b px-4 py-3 sm:px-6 sm:py-4">
         <div className="max-w-5xl mx-auto flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0">
+          <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0 h-10 w-10">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1 min-w-0">
@@ -36,7 +36,7 @@ export function ResultsView({ assessment, results, onBack }: ResultsViewProps) {
       <div className="px-4 sm:px-6 py-4 sm:py-6">
         <div className="max-w-5xl mx-auto">
           <Tabs defaultValue="charts" className="w-full">
-            <TabsList className="w-full grid grid-cols-2">
+            <TabsList className="w-full grid grid-cols-2 h-10">
               <TabsTrigger value="charts">Charts</TabsTrigger>
               <TabsTrigger value="history">History</TabsTrigger>
             </TabsList>

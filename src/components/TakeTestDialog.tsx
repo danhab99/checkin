@@ -76,7 +76,7 @@ export function TakeTestDialog({ open, onOpenChange, assessment, onSubmit }: Tak
                         max={question.scaleMax || 10}
                         value={responses[question.id] || ''}
                         onChange={(e) => handleResponseChange(question.id, parseInt(e.target.value) || '')}
-                        className="w-full sm:w-32 h-12 text-lg text-center"
+                        className="w-full sm:w-32 h-10 text-base text-center"
                         placeholder="Enter value"
                       />
                       <span className="text-sm text-muted-foreground">
@@ -90,15 +90,15 @@ export function TakeTestDialog({ open, onOpenChange, assessment, onSubmit }: Tak
                   <RadioGroup
                     value={responses[question.id]?.toString() || ''}
                     onValueChange={(value) => handleResponseChange(question.id, value)}
-                    className="flex flex-col gap-3"
+                    className="flex flex-col gap-2"
                   >
-                    <div className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-accent/50 transition-colors">
+                    <div className="flex items-center space-x-3 border rounded-lg p-3 cursor-pointer hover:bg-accent/50 transition-colors">
                       <RadioGroupItem value="yes" id={`${question.id}-yes`} />
-                      <Label htmlFor={`${question.id}-yes`} className="font-normal flex-1 cursor-pointer text-base">Yes</Label>
+                      <Label htmlFor={`${question.id}-yes`} className="font-normal flex-1 cursor-pointer">Yes</Label>
                     </div>
-                    <div className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-accent/50 transition-colors">
+                    <div className="flex items-center space-x-3 border rounded-lg p-3 cursor-pointer hover:bg-accent/50 transition-colors">
                       <RadioGroupItem value="no" id={`${question.id}-no`} />
-                      <Label htmlFor={`${question.id}-no`} className="font-normal flex-1 cursor-pointer text-base">No</Label>
+                      <Label htmlFor={`${question.id}-no`} className="font-normal flex-1 cursor-pointer">No</Label>
                     </div>
                   </RadioGroup>
                 )}
@@ -108,8 +108,8 @@ export function TakeTestDialog({ open, onOpenChange, assessment, onSubmit }: Tak
                     value={responses[question.id]?.toString() || ''}
                     onChange={(e) => handleResponseChange(question.id, e.target.value)}
                     placeholder="Type your response..."
-                    rows={4}
-                    className="resize-none text-base"
+                    rows={3}
+                    className="resize-none"
                   />
                 )}
 
@@ -120,10 +120,10 @@ export function TakeTestDialog({ open, onOpenChange, assessment, onSubmit }: Tak
         </ScrollArea>
 
         <DialogFooter className="px-4 pb-6 sm:px-6 gap-2 flex-col sm:flex-row">
-          <Button variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto h-10">
             Cancel
           </Button>
-          <Button onClick={handleSubmit} disabled={!allAnswered} className="w-full sm:w-auto">
+          <Button onClick={handleSubmit} disabled={!allAnswered} className="w-full sm:w-auto h-10">
             Submit Test
           </Button>
         </DialogFooter>
