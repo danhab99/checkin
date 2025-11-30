@@ -3,7 +3,7 @@ import { useKV } from '@github/spark/hooks'
 import { Assessment, TestResult, TestResponse } from '@/lib/types'
 import { AssessmentCard } from '@/components/AssessmentCard'
 import { AssessmentDialog } from '@/components/AssessmentDialog'
-import { TakeTestDialog } from '@/components/TakeTestDialog'
+import { TakeTestView } from '@/components/TakeTestView'
 import { ResultsView } from '@/components/ResultsView'
 import { Button } from '@/components/ui/button'
 import { Plus } from '@phosphor-icons/react'
@@ -17,7 +17,6 @@ function App() {
   const [results, setResults] = useKV<TestResult[]>('test-results', [])
   
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [testDialogOpen, setTestDialogOpen] = useState(false)
   const [editingAssessment, setEditingAssessment] = useState<Assessment | undefined>()
   const [takingTestAssessment, setTakingTestAssessment] = useState<Assessment | null>(null)
   const [viewingResults, setViewingResults] = useState<Assessment | null>(null)
@@ -64,7 +63,6 @@ function App() {
 
   const handleTakeTest = (assessment: Assessment) => {
     setTakingTestAssessment(assessment)
-    setTestDialogOpen(true)
   }
 
   const handleSubmitTest = (assessmentId: string, responses: TestResponse[]) => {
@@ -76,7 +74,6 @@ function App() {
     }
     
     setResults(current => [...(current || []), newResult])
-    setTestDialogOpen(false)
     setTakingTestAssessment(null)
     toast.success('Test submitted successfully')
   }
@@ -91,6 +88,19 @@ function App() {
 
   const getResultsForAssessment = (assessmentId: string) => {
     return (results || []).filter(r => r.assessmentId === assessmentId)
+  }
+
+  if (takingTestAssessment) {
+    return (
+      <>
+        <TakeTestView
+          assessment={takingTestAssessment}
+          onSubmit={handleSubmitTest}
+          onBack={() => setTakingTestAssessment(null)}
+        />
+        <Toaster />
+      </>
+    )
   }
 
   if (viewingResults) {
@@ -178,13 +188,6 @@ function App() {
         }}
         onSave={handleCreateAssessment}
         editingAssessment={editingAssessment}
-      />
-
-      <TakeTestDialog
-        open={testDialogOpen}
-        onOpenChange={setTestDialogOpen}
-        assessment={takingTestAssessment}
-        onSubmit={handleSubmitTest}
       />
 
       <Toaster />
