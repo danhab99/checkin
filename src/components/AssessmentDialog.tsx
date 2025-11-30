@@ -74,16 +74,16 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh]">
-        <DialogHeader>
-          <DialogTitle>{editingAssessment ? 'Edit Assessment' : 'Create New Assessment'}</DialogTitle>
+      <DialogContent className="max-w-2xl max-h-[95vh] sm:max-h-[90vh] w-[95vw] sm:w-full p-0">
+        <DialogHeader className="px-4 pt-6 pb-4 sm:px-6">
+          <DialogTitle className="text-xl">{editingAssessment ? 'Edit Assessment' : 'Create New Assessment'}</DialogTitle>
           <DialogDescription>
             Build a custom questionnaire to track over time
           </DialogDescription>
         </DialogHeader>
         
-        <ScrollArea className="max-h-[60vh] pr-4">
-          <div className="space-y-6">
+        <ScrollArea className="max-h-[calc(95vh-180px)] sm:max-h-[calc(90vh-180px)] px-4 sm:px-6">
+          <div className="space-y-6 pb-4">
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input
@@ -91,6 +91,7 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Daily Mood Check"
+                className="h-11"
               />
             </div>
 
@@ -102,6 +103,7 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Brief description of what this assessment tracks"
                 rows={2}
+                className="resize-none"
               />
             </div>
 
@@ -111,44 +113,48 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
               <div className="flex items-center justify-between">
                 <Label className="text-base">Questions</Label>
                 <Button onClick={addQuestion} variant="outline" size="sm">
-                  <Plus className="mr-2" />
-                  Add Question
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add
                 </Button>
               </div>
 
               {questions.map((question, index) => (
-                <div key={question.id} className="space-y-3 p-4 border rounded-lg">
+                <div key={question.id} className="space-y-3 p-3 sm:p-4 border rounded-lg">
                   <div className="flex items-start gap-2">
-                    <div className="flex-1 space-y-3">
+                    <div className="flex-1 space-y-3 min-w-0">
                       <Input
                         value={question.text}
                         onChange={(e) => updateQuestion(index, { text: e.target.value })}
                         placeholder="Question text"
+                        className="h-11"
                       />
 
-                      <div className="flex gap-3 items-center">
-                        <Label className="text-sm text-muted-foreground">Type:</Label>
-                        <Select
-                          value={question.type}
-                          onValueChange={(value: QuestionType) => updateQuestion(index, { type: value })}
-                        >
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="scale">Scale (1-10)</SelectItem>
-                            <SelectItem value="yes-no">Yes/No</SelectItem>
-                            <SelectItem value="text">Text</SelectItem>
-                          </SelectContent>
-                        </Select>
+                      <div className="space-y-3">
+                        <div className="flex gap-2 items-center flex-wrap">
+                          <Label className="text-sm text-muted-foreground shrink-0">Type:</Label>
+                          <Select
+                            value={question.type}
+                            onValueChange={(value: QuestionType) => updateQuestion(index, { type: value })}
+                          >
+                            <SelectTrigger className="w-[180px] h-10">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="scale">Scale (1-10)</SelectItem>
+                              <SelectItem value="yes-no">Yes/No</SelectItem>
+                              <SelectItem value="text">Text</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
 
                         {question.type === 'scale' && (
-                          <div className="flex gap-2 items-center">
+                          <div className="flex gap-2 items-center flex-wrap">
+                            <Label className="text-sm text-muted-foreground shrink-0">Range:</Label>
                             <Input
                               type="number"
                               value={question.scaleMin || 1}
                               onChange={(e) => updateQuestion(index, { scaleMin: parseInt(e.target.value) })}
-                              className="w-16"
+                              className="w-16 h-10"
                               min={0}
                             />
                             <span className="text-sm text-muted-foreground">to</span>
@@ -156,7 +162,7 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
                               type="number"
                               value={question.scaleMax || 10}
                               onChange={(e) => updateQuestion(index, { scaleMax: parseInt(e.target.value) })}
-                              className="w-16"
+                              className="w-16 h-10"
                               min={question.scaleMin || 1}
                             />
                           </div>
@@ -168,29 +174,31 @@ export function AssessmentDialog({ open, onOpenChange, onSave, editingAssessment
                       variant="ghost"
                       size="icon"
                       onClick={() => removeQuestion(index)}
+                      className="h-8 w-8 shrink-0"
                     >
-                      <Trash />
+                      <Trash className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
               ))}
 
               {questions.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground">
-                  No questions yet. Click "Add Question" to get started.
+                <div className="text-center py-8 text-sm text-muted-foreground">
+                  No questions yet. Tap "Add" to get started.
                 </div>
               )}
             </div>
           </div>
         </ScrollArea>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        <DialogFooter className="px-4 pb-6 sm:px-6 gap-2 flex-col sm:flex-row">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
             Cancel
           </Button>
           <Button 
             onClick={handleSave}
             disabled={!title.trim() || questions.filter(q => q.text.trim()).length === 0}
+            className="w-full sm:w-auto"
           >
             {editingAssessment ? 'Save Changes' : 'Create Assessment'}
           </Button>

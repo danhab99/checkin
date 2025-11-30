@@ -23,41 +23,44 @@ export function AssessmentCard({
 }: AssessmentCardProps) {
   return (
     <Card className="hover:shadow-md transition-shadow">
-      <CardHeader>
+      <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex-1">
-            <CardTitle className="text-lg">{assessment.title}</CardTitle>
-            <CardDescription className="mt-1">{assessment.description}</CardDescription>
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-base sm:text-lg">{assessment.title}</CardTitle>
+            <CardDescription className="mt-1 text-sm line-clamp-2">{assessment.description}</CardDescription>
           </div>
-          <div className="flex gap-1">
-            <Button variant="ghost" size="icon" onClick={() => onEdit(assessment)}>
-              <Pencil />
+          <div className="flex gap-1 shrink-0">
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onEdit(assessment)}>
+              <Pencil className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => onDelete(assessment)}>
-              <Trash />
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onDelete(assessment)}>
+              <Trash className="h-4 w-4" />
             </Button>
           </div>
         </div>
-        <div className="flex gap-2 mt-3">
-          <Badge variant="secondary">{assessment.questions.length} questions</Badge>
-          <Badge variant="outline">{resultCount} results</Badge>
+        <div className="flex gap-2 mt-3 flex-wrap">
+          <Badge variant="secondary" className="text-xs">{assessment.questions.length} questions</Badge>
+          <Badge variant="outline" className="text-xs">{resultCount} results</Badge>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="flex gap-2">
+      <CardContent className="pt-0">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button 
             onClick={() => onTakeTest(assessment)}
-            className="flex-1"
+            className="flex-1 w-full"
+            size="sm"
           >
-            <ClipboardText className="mr-2" />
+            <ClipboardText className="mr-2 h-4 w-4" />
             Take Test
           </Button>
           <Button 
             variant="outline" 
             onClick={() => onViewResults(assessment)}
             disabled={resultCount === 0}
+            className="flex-1 w-full sm:w-auto"
+            size="sm"
           >
-            <ChartLine className="mr-2" />
+            <ChartLine className="mr-2 h-4 w-4" />
             Results
           </Button>
         </div>

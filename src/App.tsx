@@ -94,59 +94,67 @@ function App() {
 
   if (viewingResults) {
     return (
-      <div className="min-h-screen bg-background p-4 sm:p-6">
-        <div className="max-w-5xl mx-auto">
-          <ResultsView
-            assessment={viewingResults}
-            results={getResultsForAssessment(viewingResults.id)}
-            onBack={() => setViewingResults(null)}
-          />
-        </div>
+      <div className="min-h-screen bg-background">
+        <ResultsView
+          assessment={viewingResults}
+          results={getResultsForAssessment(viewingResults.id)}
+          onBack={() => setViewingResults(null)}
+        />
         <Toaster />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 sm:p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">Habit Tracker</h1>
-            <p className="text-muted-foreground mt-1">
-              Create custom assessments and track your progress over time
-            </p>
+    <div className="min-h-screen bg-background pb-20 sm:pb-6">
+      <div className="sticky top-0 z-10 bg-background border-b px-4 py-3 sm:relative sm:border-0 sm:px-6 sm:pt-6 sm:pb-0">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">Habit Tracker</h1>
+              <p className="text-sm sm:text-base text-muted-foreground mt-1">
+                Create custom assessments and track your progress
+              </p>
+            </div>
+            <Button 
+              onClick={() => {
+                setEditingAssessment(undefined)
+                setDialogOpen(true)
+              }}
+              size="sm"
+              className="shrink-0 sm:size-default"
+            >
+              <Plus className="sm:mr-2" />
+              <span className="hidden sm:inline">Create Assessment</span>
+            </Button>
           </div>
-          <Button onClick={() => {
-            setEditingAssessment(undefined)
-            setDialogOpen(true)
-          }}>
-            <Plus className="mr-2" />
-            Create Assessment
-          </Button>
         </div>
+      </div>
 
-        {(assessments || []).length === 0 ? (
-          <Alert>
-            <AlertDescription>
-              No assessments yet. Click "Create Assessment" to build your first custom questionnaire.
-            </AlertDescription>
-          </Alert>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {(assessments || []).map(assessment => (
-              <AssessmentCard
-                key={assessment.id}
-                assessment={assessment}
-                resultCount={getResultCount(assessment.id)}
-                onTakeTest={handleTakeTest}
-                onViewResults={handleViewResults}
-                onEdit={handleEditAssessment}
-                onDelete={handleDeleteAssessment}
-              />
-            ))}
-          </div>
-        )}
+      <div className="px-4 sm:px-6 pt-4 sm:pt-6">
+        <div className="max-w-6xl mx-auto space-y-4">
+          {(assessments || []).length === 0 ? (
+            <Alert>
+              <AlertDescription>
+                No assessments yet. Tap the + button to create your first questionnaire.
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {(assessments || []).map(assessment => (
+                <AssessmentCard
+                  key={assessment.id}
+                  assessment={assessment}
+                  resultCount={getResultCount(assessment.id)}
+                  onTakeTest={handleTakeTest}
+                  onViewResults={handleViewResults}
+                  onEdit={handleEditAssessment}
+                  onDelete={handleDeleteAssessment}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <AssessmentDialog

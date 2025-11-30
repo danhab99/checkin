@@ -9,16 +9,25 @@ interface TimeSeriesChartProps {
 
 export function TimeSeriesChart({ question, results }: TimeSeriesChartProps) {
   const svgRef = useRef<SVGSVGElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!svgRef.current || results.length === 0) return
+    if (!svgRef.current || !containerRef.current || results.length === 0) return
 
     const svg = d3.select(svgRef.current)
     svg.selectAll('*').remove()
 
-    const margin = { top: 20, right: 30, bottom: 40, left: 50 }
-    const width = svgRef.current.clientWidth - margin.left - margin.right
-    const height = 300 - margin.top - margin.bottom
+    const containerWidth = containerRef.current.clientWidth
+    const isMobile = containerWidth < 640
+
+    const margin = { 
+      top: 20, 
+      right: isMobile ? 20 : 30, 
+      bottom: isMobile ? 50 : 40, 
+      left: isMobile ? 40 : 50 
+    }
+    const width = containerWidth - margin.left - margin.right
+    const height = (isMobile ? 250 : 300) - margin.top - margin.bottom
 
     const g = svg
       .append('g')
@@ -41,6 +50,7 @@ export function TimeSeriesChart({ question, results }: TimeSeriesChartProps) {
         .attr('y', height / 2)
         .attr('text-anchor', 'middle')
         .attr('fill', 'hsl(var(--muted-foreground))')
+        .attr('font-size', isMobile ? '13px' : '14px')
         .text('No data available')
       return
     }
@@ -55,16 +65,23 @@ export function TimeSeriesChart({ question, results }: TimeSeriesChartProps) {
       .domain([yMin - 0.5, yMax + 0.5])
       .range([height, 0])
 
-    g.append('g')
+    const xAxis = g.append('g')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(x).ticks(Math.min(data.length, 6)))
-      .selectAll('text')
+      .call(d3.axisBottom(x).ticks(isMobile ? 3 : Math.min(data.length, 6)))
+    
+    xAxis.selectAll('text')
       .attr('fill', 'hsl(var(--muted-foreground))')
+      .attr('font-size', isMobile ? '10px' : '12px')
+      .style('text-anchor', 'end')
+      .attr('dx', '-.8em')
+      .attr('dy', '.15em')
+      .attr('transform', 'rotate(-45)')
 
     g.append('g')
-      .call(d3.axisLeft(y).ticks(yMax - yMin + 1))
+      .call(d3.axisLeft(y).ticks(Math.min(yMax - yMin + 1, isMobile ? 5 : 10)))
       .selectAll('text')
       .attr('fill', 'hsl(var(--muted-foreground))')
+      .attr('font-size', isMobile ? '10px' : '12px')
 
     g.selectAll('.domain, .tick line')
       .attr('stroke', 'hsl(var(--border))')
@@ -78,7 +95,7 @@ export function TimeSeriesChart({ question, results }: TimeSeriesChartProps) {
       .datum(data)
       .attr('fill', 'none')
       .attr('stroke', 'hsl(var(--primary))')
-      .attr('stroke-width', 2.5)
+      .attr('stroke-width', isMobile ? 2 : 2.5)
       .attr('d', line)
 
     const area = d3.area<{ timestamp: number; value: number }>()
@@ -99,7 +116,7 @@ export function TimeSeriesChart({ question, results }: TimeSeriesChartProps) {
       .attr('class', 'dot')
       .attr('cx', d => x(new Date(d.timestamp)))
       .attr('cy', d => y(d.value))
-      .attr('r', 4)
+      .attr('r', isMobile ? 3 : 4)
       .attr('fill', 'hsl(var(--primary))')
       .attr('stroke', 'hsl(var(--background))')
       .attr('stroke-width', 2)
@@ -119,13 +136,13 @@ export function TimeSeriesChart({ question, results }: TimeSeriesChartProps) {
       .attr('y', y(average) - 5)
       .attr('text-anchor', 'end')
       .attr('fill', 'hsl(var(--accent-foreground))')
-      .attr('font-size', '12px')
+      .attr('font-size', isMobile ? '11px' : '12px')
       .text(`Avg: ${average.toFixed(1)}`)
 
   }, [question, results])
 
   return (
-    <div className="w-full">
+    <div className="w-full" ref={containerRef}>
       <svg
         ref={svgRef}
         className="w-full"
