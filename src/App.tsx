@@ -1,13 +1,10 @@
 import { useState } from 'react'
 import { useKV } from '@github/spark/hooks'
 import { Assessment, TestResult, TestResponse } from '@/lib/types'
-import { AssessmentCard } from '@/components/AssessmentCard'
-import { AssessmentDialog } from '@/components/AssessmentDialog'
-import { TakeTestView } from '@/components/TakeTestView'
-import { ResultsView } from '@/components/ResultsView'
+import { AssessmentDialog } from '@/components'
+import { TakeTestPage, ResultsPage, HomePage } from '@/pages'
 import { Button } from '@/components/ui/button'
 import { Plus } from '@phosphor-icons/react'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { toast } from 'sonner'
 import { Toaster } from '@/components/ui/sonner'
 import { motion } from 'framer-motion'
@@ -93,7 +90,7 @@ function App() {
   if (takingTestAssessment) {
     return (
       <>
-        <TakeTestView
+        <TakeTestPage
           assessment={takingTestAssessment}
           onSubmit={handleSubmitTest}
           onBack={() => setTakingTestAssessment(null)}
@@ -113,7 +110,7 @@ function App() {
         transition={{ duration: 0.2 }}
         className="min-h-screen bg-background"
       >
-        <ResultsView
+        <ResultsPage
           assessment={viewingResults}
           results={getResultsForAssessment(viewingResults.id)}
           onBack={() => setViewingResults(null)}
@@ -154,31 +151,14 @@ function App() {
         </div>
       </div>
 
-      <div className="px-4 sm:px-6 pt-4 sm:pt-6">
-        <div className="max-w-6xl mx-auto space-y-4">
-          {(assessments || []).length === 0 ? (
-            <Alert>
-              <AlertDescription>
-                No assessments yet. Tap the + button to create your first questionnaire.
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {(assessments || []).map(assessment => (
-                <AssessmentCard
-                  key={assessment.id}
-                  assessment={assessment}
-                  resultCount={getResultCount(assessment.id)}
-                  onTakeTest={handleTakeTest}
-                  onViewResults={handleViewResults}
-                  onEdit={handleEditAssessment}
-                  onDelete={handleDeleteAssessment}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+      <HomePage
+        assessments={assessments || []}
+        getResultCount={getResultCount}
+        onTakeTest={handleTakeTest}
+        onViewResults={handleViewResults}
+        onEdit={handleEditAssessment}
+        onDelete={handleDeleteAssessment}
+      />
 
       <AssessmentDialog
         open={dialogOpen}

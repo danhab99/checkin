@@ -1,22 +1,21 @@
 import { useState, useEffect } from 'react'
 import { Assessment, TestResponse } from '@/lib/types'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
-import { ArrowLeft, CheckCircle } from '@phosphor-icons/react'
+import { CheckCircle } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 import { Progress } from '@/components/ui/progress'
+import { PageHeader } from '@/components/PageHeader'
+import { QuestionInput } from '@/components/QuestionInput'
 
-interface TakeTestViewProps {
+interface TakeTestPageProps {
   assessment: Assessment
   onSubmit: (assessmentId: string, responses: TestResponse[]) => void
   onBack: () => void
 }
 
-export function TakeTestView({ assessment, onSubmit, onBack }: TakeTestViewProps) {
+export function TakeTestPage({ assessment, onSubmit, onBack }: TakeTestPageProps) {
   const [responses, setResponses] = useState<Record<string, string | number>>({})
 
   useEffect(() => {
@@ -66,7 +65,16 @@ export function TakeTestView({ assessment, onSubmit, onBack }: TakeTestViewProps
               onClick={onBack}
               className="shrink-0"
             >
-              <ArrowLeft className="h-5 w-5" />
+              <span className="sr-only">Back</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 256 256"
+              >
+                <path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z" />
+              </svg>
             </Button>
             <div className="flex-1 min-w-0">
               <h1 className="text-lg sm:text-xl font-semibold truncate">{assessment.title}</h1>
@@ -105,51 +113,11 @@ export function TakeTestView({ assessment, onSubmit, onBack }: TakeTestViewProps
               </div>
 
               <div className="pl-11">
-                {question.type === 'scale' && (
-                  <div className="space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                      <Input
-                        type="number"
-                        min={question.scaleMin || 1}
-                        max={question.scaleMax || 10}
-                        value={responses[question.id] || ''}
-                        onChange={(e) => handleResponseChange(question.id, parseInt(e.target.value) || '')}
-                        className="w-full sm:w-32 h-11 text-base text-center"
-                        placeholder="Enter value"
-                      />
-                      <span className="text-sm text-muted-foreground">
-                        Range: {question.scaleMin || 1} - {question.scaleMax || 10}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {question.type === 'yes-no' && (
-                  <RadioGroup
-                    value={responses[question.id]?.toString() || ''}
-                    onValueChange={(value) => handleResponseChange(question.id, value)}
-                    className="flex flex-col gap-2"
-                  >
-                    <div className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-accent/50 transition-colors">
-                      <RadioGroupItem value="yes" id={`${question.id}-yes`} />
-                      <Label htmlFor={`${question.id}-yes`} className="font-normal flex-1 cursor-pointer text-base">Yes</Label>
-                    </div>
-                    <div className="flex items-center space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-accent/50 transition-colors">
-                      <RadioGroupItem value="no" id={`${question.id}-no`} />
-                      <Label htmlFor={`${question.id}-no`} className="font-normal flex-1 cursor-pointer text-base">No</Label>
-                    </div>
-                  </RadioGroup>
-                )}
-
-                {question.type === 'text' && (
-                  <Textarea
-                    value={responses[question.id]?.toString() || ''}
-                    onChange={(e) => handleResponseChange(question.id, e.target.value)}
-                    placeholder="Type your response..."
-                    rows={4}
-                    className="resize-none text-base"
-                  />
-                )}
+                <QuestionInput
+                  question={question}
+                  value={responses[question.id]}
+                  onChange={(value) => handleResponseChange(question.id, value)}
+                />
               </div>
 
               {index < assessment.questions.length - 1 && <Separator className="mt-6" />}
