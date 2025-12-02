@@ -157,7 +157,7 @@ function App() {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">Habit Tracker</h1>
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">CheckIn</h1>
               <p className="text-sm sm:text-base text-muted-foreground mt-1">
                 Create custom assessments and track your progress
               </p>

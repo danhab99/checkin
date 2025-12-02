@@ -21,9 +21,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg', 'icon-192.png', 'icon-512.png'],
       manifest: {
-        name: 'Habit Tracker',
-        short_name: 'Habits',
-        description: 'Track your habits and assessments over time',
+        name: 'CheckIn',
+        short_name: 'CheckIn',
+        description: 'Create and track custom assessments over time',
         theme_color: '#000000',
         background_color: '#000000',
         display: 'standalone',

@@ -1,5 +1,6 @@
-# ✨ Welcome to Your Spark Template!
-You've just launched your brand-new Spark Template Codespace — everything’s fired up and ready for you to explore, build, and create with Spark!
+# CheckIn
+
+A mobile-first Progressive Web App for creating and tracking custom assessments over time.
 
 This template is your blank canvas. It comes with a minimal setup to help you get started quickly with Spark development.
 
