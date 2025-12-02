@@ -1,4 +1,6 @@
 export { HomePage } from './HomePage'
 export { TakeTestPage } from './TakeTestPage'
-export { ResultsPage } from './ResultsPage'
+export { ResultsListPage } from './ResultsListPage'
+export { ResultDetailPage } from './ResultDetailPage'
+export { ChartsPage } from './ResultsPage'
 export { CreateAssessmentPage } from './CreateAssessmentPage'

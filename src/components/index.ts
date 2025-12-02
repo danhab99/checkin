@@ -1,6 +1,5 @@
 export { PageHeader } from './PageHeader'
 export { QuestionInput } from './QuestionInput'
 export { QuestionEditor } from './QuestionEditor'
-export { TestResultCard } from './TestResultCard'
 export { AssessmentCard } from './AssessmentCard'
 export { TimeSeriesChart } from './TimeSeriesChart'

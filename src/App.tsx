@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useLocalStorage } from 'react-use'
 import { Assessment, TestResult, TestResponse } from '@/lib/types'
-import { TakeTestPage, ResultsPage, HomePage, CreateAssessmentPage } from '@/pages'
+import { TakeTestPage, ResultsListPage, ResultDetailPage, ChartsPage, HomePage, CreateAssessmentPage } from '@/pages'
 import { Button } from '@/components/ui/button'
 import { Plus } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
@@ -13,7 +13,9 @@ function App() {
   const [creatingAssessment, setCreatingAssessment] = useState(false)
   const [editingAssessment, setEditingAssessment] = useState<Assessment | undefined>()
   const [takingTestAssessment, setTakingTestAssessment] = useState<Assessment | null>(null)
-  const [viewingResults, setViewingResults] = useState<Assessment | null>(null)
+  const [viewingResultsList, setViewingResultsList] = useState<Assessment | null>(null)
+  const [viewingResultDetail, setViewingResultDetail] = useState<TestResult | null>(null)
+  const [viewingCharts, setViewingCharts] = useState<Assessment | null>(null)
 
   const handleCreateAssessment = (data: Omit<Assessment, 'id' | 'createdAt' | 'updatedAt'>) => {
     const now = Date.now()
@@ -69,7 +71,7 @@ function App() {
   }
 
   const handleViewResults = (assessment: Assessment) => {
-    setViewingResults(assessment)
+    setViewingResultsList(assessment)
   }
 
   const getResultCount = (assessmentId: string) => {
@@ -103,22 +105,43 @@ function App() {
     )
   }
 
-  if (viewingResults) {
+  if (viewingCharts) {
     return (
-      <motion.div
-        key="results"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.2 }}
-        className="min-h-screen bg-background"
-      >
-        <ResultsPage
-          assessment={viewingResults}
-          results={getResultsForAssessment(viewingResults.id)}
-          onBack={() => setViewingResults(null)}
-        />
-      </motion.div>
+      <ChartsPage
+        assessment={viewingCharts}
+        results={getResultsForAssessment(viewingCharts.id)}
+        onBack={() => {
+          setViewingResultsList(viewingCharts)
+          setViewingCharts(null)
+        }}
+      />
+    )
+  }
+
+  if (viewingResultDetail && viewingResultsList) {
+    return (
+      <ResultDetailPage
+        assessment={viewingResultsList}
+        result={viewingResultDetail}
+        onBack={() => setViewingResultDetail(null)}
+      />
+    )
+  }
+
+  if (viewingResultsList) {
+    return (
+      <ResultsListPage
+        assessment={viewingResultsList}
+        results={getResultsForAssessment(viewingResultsList.id)}
+        onBack={() => {
+          setViewingResultsList(null)
+          setViewingResultDetail(null)
+        }}
+        onViewResult={(result) => setViewingResultDetail(result)}
+        onViewCharts={() => {
+          setViewingCharts(viewingResultsList)
+        }}
+      />
     )
   }
 
