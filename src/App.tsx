@@ -1,19 +1,16 @@
 import { useState } from 'react'
-import { useKV } from '@github/spark/hooks'
+import { useLocalStorage } from 'react-use'
 import { Assessment, TestResult, TestResponse } from '@/lib/types'
-import { AssessmentDialog } from '@/components'
-import { TakeTestPage, ResultsPage, HomePage } from '@/pages'
+import { TakeTestPage, ResultsPage, HomePage, CreateAssessmentPage } from '@/pages'
 import { Button } from '@/components/ui/button'
 import { Plus } from '@phosphor-icons/react'
-import { toast } from 'sonner'
-import { Toaster } from '@/components/ui/sonner'
 import { motion } from 'framer-motion'
 
 function App() {
-  const [assessments, setAssessments] = useKV<Assessment[]>('assessments', [])
-  const [results, setResults] = useKV<TestResult[]>('test-results', [])
+  const [assessments, setAssessments] = useLocalStorage<Assessment[]>('assessments', [])
+  const [results, setResults] = useLocalStorage<TestResult[]>('test-results', [])
   
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [creatingAssessment, setCreatingAssessment] = useState(false)
   const [editingAssessment, setEditingAssessment] = useState<Assessment | undefined>()
   const [takingTestAssessment, setTakingTestAssessment] = useState<Assessment | null>(null)
   const [viewingResults, setViewingResults] = useState<Assessment | null>(null)
@@ -29,7 +26,6 @@ function App() {
             : a
         )
       )
-      toast.success('Assessment updated successfully')
     } else {
       const newAssessment: Assessment = {
         ...data,
@@ -38,23 +34,21 @@ function App() {
         updatedAt: now
       }
       setAssessments(current => [...(current || []), newAssessment])
-      toast.success('Assessment created successfully')
     }
     
-    setDialogOpen(false)
+    setCreatingAssessment(false)
     setEditingAssessment(undefined)
   }
 
   const handleEditAssessment = (assessment: Assessment) => {
     setEditingAssessment(assessment)
-    setDialogOpen(true)
+    setCreatingAssessment(true)
   }
 
   const handleDeleteAssessment = (assessment: Assessment) => {
     if (confirm(`Delete "${assessment.title}"? This will also delete all associated test results.`)) {
       setAssessments(current => (current || []).filter(a => a.id !== assessment.id))
       setResults(current => (current || []).filter(r => r.assessmentId !== assessment.id))
-      toast.success('Assessment deleted')
     }
   }
 
@@ -72,7 +66,6 @@ function App() {
     
     setResults(current => [...(current || []), newResult])
     setTakingTestAssessment(null)
-    toast.success('Test submitted successfully')
   }
 
   const handleViewResults = (assessment: Assessment) => {
@@ -87,16 +80,26 @@ function App() {
     return (results || []).filter(r => r.assessmentId === assessmentId)
   }
 
+  if (creatingAssessment || editingAssessment) {
+    return (
+      <CreateAssessmentPage
+        onSave={handleCreateAssessment}
+        onCancel={() => {
+          setCreatingAssessment(false)
+          setEditingAssessment(undefined)
+        }}
+        editingAssessment={editingAssessment}
+      />
+    )
+  }
+
   if (takingTestAssessment) {
     return (
-      <>
-        <TakeTestPage
-          assessment={takingTestAssessment}
-          onSubmit={handleSubmitTest}
-          onBack={() => setTakingTestAssessment(null)}
-        />
-        <Toaster />
-      </>
+      <TakeTestPage
+        assessment={takingTestAssessment}
+        onSubmit={handleSubmitTest}
+        onBack={() => setTakingTestAssessment(null)}
+      />
     )
   }
 
@@ -115,7 +118,6 @@ function App() {
           results={getResultsForAssessment(viewingResults.id)}
           onBack={() => setViewingResults(null)}
         />
-        <Toaster />
       </motion.div>
     )
   }
@@ -140,7 +142,7 @@ function App() {
             <Button 
               onClick={() => {
                 setEditingAssessment(undefined)
-                setDialogOpen(true)
+                setCreatingAssessment(true)
               }}
               className="shrink-0 h-10 px-3 sm:px-4"
             >
@@ -159,18 +161,6 @@ function App() {
         onEdit={handleEditAssessment}
         onDelete={handleDeleteAssessment}
       />
-
-      <AssessmentDialog
-        open={dialogOpen}
-        onOpenChange={(open) => {
-          setDialogOpen(open)
-          if (!open) setEditingAssessment(undefined)
-        }}
-        onSave={handleCreateAssessment}
-        editingAssessment={editingAssessment}
-      />
-
-      <Toaster />
     </motion.div>
   )
 }
